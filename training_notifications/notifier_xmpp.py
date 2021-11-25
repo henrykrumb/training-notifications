@@ -12,7 +12,7 @@ class NotifierXMPP(Notifier):
             aioxmpp.make_security_layer(password)
         )
 
-    def notify(self, epoch, metrics):
+    async def notify(self, epoch, metrics):
         title = Notifier.make_title()
         message = title + '\n' + Notifier.make_message(epoch, metrics)
         async with client.connected() as stream:
