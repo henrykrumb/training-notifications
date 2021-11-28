@@ -20,5 +20,12 @@ def notifier_from_json(filename):
 
 
 def notify_all(notifiers, epoch, metrics):
+    """
+    Send notifications using a list of notifiers.
+    """
     for notifier in notifiers:
-        notifier.notify(epoch, metrics)
+        try:
+            notifier.notify(epoch, metrics)
+        except Exception as ex:
+            print('Warning: Failed to notify about training progress.')
+            print(ex)
