@@ -1,6 +1,7 @@
 import os
 import json
 import traceback
+from importlib import import_module
 
 import click
 
@@ -12,15 +13,16 @@ def notifier_from_dict(d):
 
     :param d: dict containing notifier configuration
     """
-    module_name = 'notifier'
+    module_name = 'training_notifications.notifier'
     if 'notifier' in d:
         module_name += '_' + d['notifier'].lower()
     try:
-        module = __import__(module_name)
+        module = import_module(module_name)
     except ImportError:
         click.secho(f'Error: Notifier {module_name} not found', fg='red')
         exit()
     class_name = 'Notifier' + d.get('notifier')
+    d.pop('notifier')
     klass = getattr(module, class_name)
     instance = klass(**d)
     return instance
