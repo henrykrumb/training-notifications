@@ -15,6 +15,6 @@ class NotifierKDEConnect(Notifier):
     def notify(self, epoch, metrics):
         title = Notifier.make_title()
         message = Notifier.make_message(epoch, metrics)
-        cmd = f'kdeconnect-cli -d {} --ping-msg'.split(' ')
+        cmd = f'kdeconnect-cli -d {self.device_id} --ping-msg'.split(' ')
         cmd.append(f'"{title}: {message}"')
         subprocess.run(cmd)
