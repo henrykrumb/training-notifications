@@ -55,7 +55,7 @@ import json
 
 with open('config.json', 'r') as f:
 	config = json.load(f)
-notifier_config = config.get('notifiers', {})
+notifier_config = config.get('notifiers', [])
 notifiers = [notifier_from_dict(n) for n in notifier_config]
 ```
 
