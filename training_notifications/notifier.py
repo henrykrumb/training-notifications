@@ -17,7 +17,7 @@ class Notifier:
         """
         message = f'epoch: {epoch}'
         for key, metric in metrics.items():
-            message += f'{key}: {metric:.5f}'
+            message += f' {key}: {metric:.5f}'
         return message
 
     def notify(self, epoch, metrics):
