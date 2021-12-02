@@ -1,4 +1,4 @@
-import asio
+import asyncio
 import aioxmpp
 
 from .notifier import Notifier
@@ -6,20 +6,25 @@ from .notifier import Notifier
 
 class NotifierXMPP(Notifier):
     def __init__(self, jid, password, recipient):
-        super(self, NotifierXMPP).__init__()
+        super(NotifierXMPP, self).__init__()
         self.client = aioxmpp.PresenceManagedClient(
-            jid,
+            aioxmpp.structs.JID.fromstr(jid),
             aioxmpp.make_security_layer(password)
         )
         self.recipient = recipient
 
-    async def notify(self, epoch, metrics):
+    async def notify_internal(self, epoch, metrics):
         title = Notifier.make_title()
         message = title + '\n' + Notifier.make_message(epoch, metrics)
-        async with client.connected() as stream:
+        async with self.client.connected() as stream:
             msg = aioxmpp.Message(
-                to=recipient,
+                to=aioxmpp.structs.JID.fromstr(self.recipient),
                 type_=aioxmpp.MessageType.CHAT,
             )
             msg.body[None] = message
-            await client.send(msg)
+            await self.client.send(msg)
+
+    def notify(self, epoch, metrics):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.notify_internal(epoch, metrics))
+        loop.close()
