@@ -5,13 +5,19 @@ from .notifier import Notifier
 
 
 class NotifierXMPP(Notifier):
-    def __init__(self, jid, password, recipient):
+    def __init__(self, jid, password, recipient=''):
+        """
+        :param jid: Jabber ID as a string, e.g. user@jabber.com
+        :param password: Password that belongs to Jabber ID
+        :param recipient: Recipient JID as string. If empty, message is sent to sender.
+        """
         super(NotifierXMPP, self).__init__()
         self.client = aioxmpp.PresenceManagedClient(
             aioxmpp.structs.JID.fromstr(jid),
             aioxmpp.make_security_layer(password)
         )
-        self.recipient = recipient
+        # send message to self if no recipient provided
+        self.recipient = recipient if recipient else jid
 
     async def notify_internal(self, epoch, metrics):
         title = Notifier.make_title()
